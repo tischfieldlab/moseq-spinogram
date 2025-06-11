@@ -46,8 +46,8 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/tischfieldlab/fptools"
-Repository = "https://github.com/tischfieldlab/fptools"
+Homepage = "https://github.com/tischfieldlab/moseq-spinogram"
+Repository = "https://github.com/tischfieldlab/moseq-spinogram"
 
 [tool.setuptools.packages.find]
 exclude = [
@@ -75,7 +75,7 @@ match-dir = "^((?!notebooks|\\.).)*$"
 add-ignore = "D100,D101,D104"
 
 [tool.mypy]
-modules = ["msq_maker"]
+modules = ["moseq_spinogram"]
 follow_imports = "normal"
 ignore_missing_imports = "True"
 ignore_missing_imports_per_module = "True"
