@@ -5,7 +5,7 @@ import argparse
 import os
 
 from moseq_spinogram.spinogram import plot_clustered_corpus, plot_many_single_syllable, plot_one_single_syllable, plot_syllable_corpus
-from moseq_spinogram.util import get_syllable_id_mapping
+from moseq_spinogram.util import get_syllable_id_mapping, reindex_label_map
 
 
 def main():
@@ -47,6 +47,7 @@ def main():
         subp.add_argument('--color', default="red", help="Color to use for the spinogram plot.")
         subp.add_argument('--save-data', action='store_true', help="Save the spinogram data to JSON.")
         subp.add_argument('--no-plot', action='store_true', help="Do not output plot(s).")
+        subp.add_argument('--style', choices=['spinogram', 'point-cloud'], default='spinogram', help="Style of renderings, either spinograms or point-clouds")
 
         pick_choices = ['median', 'longest', 'shortest', 'shuffle']
         subp.add_argument('--pick', choices=pick_choices, default=pick_choices[0], help="Method for choosing which syllable instance(s) to plot.")
@@ -60,14 +61,9 @@ def main():
     args.name = os.path.join(args.dir, args.name)
 
     label_map = get_syllable_id_mapping(args.model)
-    if args.sort and args.count == 'usage':
-        args.label_map = { itm['usage']: itm for itm in label_map }
+    if args.sort:
+        args.label_map = reindex_label_map(label_map, by=args.count)
 
-    elif args.sort and args.count == 'frames':
-        args.label_map = { itm['frames']: itm for itm in label_map }
-    
-    else:
-        args.label_map = { itm['raw']: itm for itm in label_map }
 
 
     args.func(args)
