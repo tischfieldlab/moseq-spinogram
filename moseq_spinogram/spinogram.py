@@ -1,5 +1,5 @@
-#!/usr/bin/env python
 from argparse import Namespace
+import logging
 from typing import List, Optional
 from typing_extensions import TypedDict
 import matplotlib as mpl
@@ -326,6 +326,7 @@ def produce_spinograms(syllables: List[int], examples: int, axes, args: Namespac
                         # print out the error in a nice way
                         fmt_args = [e, _self_args[1], _self_args[2] + 1]
                         tqdm.write("Something happened: {}; attempting to pick another slice for syllable {} example #{}".format(*fmt_args))
+                        logging.error(e, exc_info=True)
 
                         # requeue the work item, BUT picking another slice
                         _self_args[-1] = next(slice_iter)
@@ -378,7 +379,7 @@ def produce_spinograms(syllables: List[int], examples: int, axes, args: Namespac
     return all_data
 #end produce_spinograms()
 
-def partial_produce_spinograms(args: Namespace, sid: int, ex: int, slice: Slice) -> SpinogramData:
+def partial_produce_spinograms(args: Namespace, sid: int, ex: int, ax_id: int, slice: Slice) -> SpinogramData:
     try:
         data = create_spinogram_data(slice, numpts=args.num_samples)
 
@@ -394,7 +395,7 @@ def partial_produce_spinograms(args: Namespace, sid: int, ex: int, slice: Slice)
 #end partial_produce_spinograms()
 
 
-def partial_produce_point_clouds(args: Namespace, sid: int, ex: int, slice: Slice):
+def partial_produce_point_clouds(args: Namespace, sid: int, ex: int, ax_id: int, slice: Slice):
     try:
         data = create_point_cloud_data(slice, numpts=args.num_samples)
 
