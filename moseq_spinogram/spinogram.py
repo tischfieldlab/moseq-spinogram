@@ -289,7 +289,7 @@ def produce_spinograms(syllables: List[int], examples: int, axes, args: Namespac
     else:
         raise ValueError(f'Unexpected style "{args.style}"; expected either "spinogram" or "point-cloud"!')
 
-    with ProcessPoolExecutor(max_workers=None) as pool:
+    with ProcessPoolExecutor(max_workers=args.processors) as pool:
         for sid in tqdm(syllables, desc="Syllables"):
             slices = slice_gen(sid, args.pick)
             num_slices = len(slices)

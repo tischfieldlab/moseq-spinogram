@@ -3,6 +3,9 @@
 
 import argparse
 import os
+import sys
+
+import psutil
 
 from moseq_spinogram.spinogram import plot_clustered_corpus, plot_many_single_syllable, plot_one_single_syllable, plot_syllable_corpus
 from moseq_spinogram.util import get_syllable_id_mapping, reindex_label_map
@@ -51,6 +54,19 @@ def main():
 
         pick_choices = ['median', 'longest', 'shortest', 'shuffle']
         subp.add_argument('--pick', choices=pick_choices, default=pick_choices[0], help="Method for choosing which syllable instance(s) to plot.")
+
+        # NOTE: cpu_affinity does not work on macOS systems, so we use cpu_count instead. This shouldn't be an issue because slurm
+        # does not get utilized on macOS, so cpu_count is sufficient as there will never be a case in which we are asking for more
+        # cpu cores than are allocated to us.
+        #           - Jared @ 24 May 2021
+        num_processors = psutil.cpu_count() if sys.platform == 'darwin' else len(psutil.Process().cpu_affinity())
+        subp.add_argument('-p', '--processors', default=num_processors, type=int, help="Number of CPUs to use")
+
+
+
+    if len(sys.argv) < 2:
+        parser.print_help()
+        sys.exit(1)
 
     args = parser.parse_args()
 
